@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css?family=Khula:400,700" rel="stylesheet">
+<style>
+
+body { 
+    background-color: rgba(253,217,40,1);
+    font-family: 'Khula', sans-serif;
+    font-size: 16px;
+    color: #4f504f;
+    font-weight: normal;
+    line-height: 24px;
+    width: 375px;
+    height: 600px;
+    border: 0px solid #4f504f;
+    padding: 4px 8px 2px 8px;
+}
+
+.other_font{
+	font-family: 'Khula', sans-serif;
+    font-size: 16px;
+    color: #4f504f;
+    font-weight: normal;
+}
+
+	path { 
+		stroke: #4f504f;
+		stroke-width: 2;
+		fill: none;
+		opacity: 0;
+	}
+
+
+	.axis path,
+	.axis line {
+		stroke: #4f504f;
+		stroke-width: 1;
+		shape-rendering: crispEdges;
+		opacity: 0;		
+	}
+
+.shadow {
+    -webkit-filter: drop-shadow( 5px 5px 5px #000 );
+            filter: drop-shadow( 5px 5px 5px #000 );
+}    
+
+div.boxed{
+    display: inline-block;
+    border:none;
+    color: rgba(253,217,40,1);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    font-family: 'Khula', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    width:auto;
+    height: auto;
+    padding: 6px 20px;
+     box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+     -moz-box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+     -webkit-box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+    background-color: #4f504f;
+    background-image: linear-gradient(to bottom, #606160, #070807);
+    margin:15px 15px 1px 15px;
+    float:left;
+}
+
+div.boxed:active{
+    display: inline-block;
+    border:none;
+    color: rgba(253,217,40,1);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    font-family: 'Khula', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    width:auto;
+    height: auto;
+    padding: 6px 20px;
+    background-color: #4f504f;
+    background-image: linear-gradient(to bottom, #606160, #070807);
+    margin:5px 15px 1px 15px;
+    float:left;
+       box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+     -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+     -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+}
+</style>
+</head>
+<body>
+<p style="margin:2px 4px 2px 4px;line-height:16px;color:#4f504f;font-weight:bold;font-size:16px;text-align:center;">Major parties in Goa 1967-2012</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+
+<script>
+
+//much of the code is from d3noob.org (http://www.d3noob.org/2014/05/show-hide-d3js-element-by-clicking-on.html) and stackoverflow
+
+var	margin = {top: 20, right: 10, bottom: 150, left: 32}, 
+	width = 375 - margin.left - margin.right,
+	height = 350 - margin.top - margin.bottom;
+
+var	parseDate = d3.time.format("%Y").parse;
+
+var	x = d3.time.scale().range([0, width]);
+var	y0 = d3.scale.linear().range([height, 0]);
+var	y1 = d3.scale.linear().range([height, 0]);
+var	y2 = d3.scale.linear().range([height, 0]);
+
+var	xAxis = d3.svg.axis().scale(x)
+	.orient("bottom")
+	.ticks(5);
+
+var	yAxis = d3.svg.axis().scale(y0)
+	.orient("left")
+	.ticks(5);
+
+var	valueline = d3.svg.line()
+	.interpolate("monotone")
+	.x(function(d) { return x(d.YEAR); })
+	.y(function(d) { return y0(d.BJP); });	
+    
+var	valueline2 = d3.svg.line()
+	.interpolate("monotone")
+	.x(function(d) { return x(d.YEAR); })
+	.y(function(d) { return y1(d.INC); });
+
+var	valueline3 = d3.svg.line()
+	.interpolate("monotone")
+	.x(function(d) { return x(d.YEAR); })
+	.y(function(d) { return y2(d.MGP); });
+  
+var	svg = d3.select("body")
+	.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+		.attr("transform", 
+		      "translate(" + margin.left + "," + margin.top + ")");
+
+
+d3.csv("../data_line_chart/goa_final.csv", function (error, data) {
+data.forEach(function(d) {
+	d.YEAR = parseDate(d.YEAR);
+	d.BJP = +d.BJP;
+	d.INC = +d.INC;
+	d.MGP = +d.MGP;
+});
+
+// Scale the range of the data
+x.domain(d3.extent(data, function(d) { return d.YEAR; }));
+y0.domain([0, 100]);
+y1.domain([0, 100]);
+y2.domain([0, 100]);
+
+svg.append("path")
+	.attr("class", "line bjpLine")
+	.attr("d", valueline(data));
+
+svg.append("path")
+	.attr("class", "line incLine")
+	.attr("d", valueline2(data));
+
+svg.append("path")
+	.attr("class", "line mgpLine")
+	.attr("d", valueline3(data));
+
+svg.append("g")	
+	.attr("class", "x axis")
+	.attr("transform", "translate(0," + height + ")")
+	.call(xAxis);
+
+svg.append("g")	
+	.attr("class", "y axis")
+	//.style("stroke","#4f504f")
+	.call(yAxis);
+
+svg.append("text")
+	.attr("y", "5")
+	.attr("x","2")
+	//.style("opacity", "0.2")
+	.text("(% of seats won)")
+	.style("fill","#4f504f")
+	.style("font-size","14px");
+
+svg
+	.append("svg:image")
+	.attr("xlink:href","../exp_buttons/bharatiya_janta_party_75.png")
+	.attr('height', '75')
+	.attr('width', '75')
+	.attr('class','shadow partyButton')
+	.attr('id','bjpButton')
+	.attr("x", 0)             
+	.attr("y", height + margin.top + 20)    
+	.on("click", function(){
+			d3.selectAll(".line:not(.bjpLine)").style("opacity", "0");
+			d3.selectAll(".bjpLine").style("opacity", "1");
+			d3.select(this).classed({'shadow': false});
+			d3.selectAll('.partyButton:not(#bjpButton)').classed({'shadow': true});
+			svg.append("text")
+				.text(function(){return (data[data.length-1].BJP);})
+				.attr("transform", "translate(" + x(data[data.length-1].YEAR) + "," + y0(data[data.length-1].BJP) + ")")
+				.attr("dy", "-12px")
+				.attr("dx", "-20px")
+				.attr("class","line bjpLine")
+				.style("opacity","1")
+				.style("fill","#4f504f");
+			svg.append("text")
+				.text("Bharatiya Janta Party")
+				.style("text-decoration","underline")
+				.attr("y", "5")
+				.attr("x", "150")
+				.attr("class","line bjpLine")
+				.style("opacity", "1")
+				.style("fill","#4f504f")
+				.style("font-size","14px")
+				.style("font-weight","bold");
+			});
+
+
+
+svg.append("text")
+	.attr("x", 20)             
+	.attr("y", height + margin.top + 115)
+	.text("BJP")
+    .style("fill","#4f504f")
+    .style("font-weight","bold");
+
+
+svg.append("svg:image")
+        .attr("xlink:href","../exp_buttons/indian_national_congress_75.png")
+        .attr('height', '75')
+        .attr('width', '75')
+        .attr('class','shadow partyButton')
+        .attr('id','incButton')
+		.attr("x", 110)             
+		.attr("y", height + margin.top + 20)    
+		.on("click", function(){
+			d3.selectAll('.line:not(.incLine)').style('opacity', "0");
+			d3.selectAll(".incLine").style('opacity', "1");
+			d3.select(this).classed({'shadow': false});
+			d3.selectAll('.partyButton:not(#incButton)').classed({'shadow': true});
+			svg.append("text")
+				.text(function(){return (data[data.length-1].INC);})
+				.attr("transform", "translate(" + x(data[data.length-1].YEAR) + "," + y1(data[data.length-1].INC) + ")")
+				.attr("dy", "15px")
+				.attr("dx", "-20px")
+				.attr("class","line incLine")
+				.style("opacity","1")
+				.style("fill","#4f504f");
+			svg.append("text")
+				.text("Indian National Congress")
+				.style("text-decoration","underline")
+				.attr("y", "5")
+				.attr("x", "150")
+				.attr("class","line incLine")
+				.style("opacity", "1")
+				.style("fill","#4f504f")
+				.style("font-size","14px")
+				.style("font-weight","bold");
+			});
+
+
+svg.append("text")
+	.attr("x", 130)             
+	.attr("y", height + margin.top + 115)    
+	.text("INC")
+	.attr("fill","#4f504f")
+	.style("font-weight","bold");
+
+
+svg.append("svg:image")
+        .attr("xlink:href","../exp_buttons/maharashtravadi_gomantak_party_75.png")
+        .attr('height', '75')
+        .attr('width', '75')
+        .attr('class','shadow partyButton')
+        .attr('id','mgpButton')
+		.attr("x", 225)             
+		.attr("y", height + margin.top + 20)    
+		.on("click", function(){
+			d3.selectAll('.line:not(.mgpLine)').style('opacity', "0");
+			d3.selectAll(".mgpLine").style('opacity', "1");
+			d3.select(this).classed({'shadow': false});
+			d3.selectAll('.partyButton:not(#mgpButton)').classed({'shadow': true});
+			svg.append("text")
+				.text(function(){return (data[data.length-1].MGP);})
+				.attr("transform", "translate(" + x(data[data.length-1].YEAR) + "," + y2(data[data.length-1].MGP) + ")")
+				.attr("dy", "-5px")
+				.attr("dx", "-20px")
+				.attr("class","line mgpLine")
+				.style("opacity","1")
+				.style("fill","#4f504f");
+			svg.append("text")
+				.text("Maharashtrawadi Gomantak Party")
+				.style("text-decoration","underline")
+				.attr("y", "45")
+				.attr("x", "100")
+				.attr("class","line mgpLine")
+				.style("opacity", "1")
+				.style("fill","#4f504f")
+				.style("font-size","14px")
+				.style("font-weight","bold");
+			
+			});
+
+svg.append("text")
+	.attr("x", 245)             
+	.attr("y", height + margin.top + 115)    
+	.text("MGP")
+	.style("fill","#4f504f")
+	.style("font-weight","bold");
+
+svg.selectAll(".tick line").attr("stroke", "#4f504f");
+svg.selectAll(".tick text").attr("fill","#4f504f");
+
+});
+
+</script>
+<p style="margin:0px 4px 1px 4px;color:#4f504f;font-weight:normal;font-size:16px;text-align:left;">The MGP, or Maharashtrawadi Gomantak Party, formed Goa's first government in 1967 and was the state's leading party for many years before its first reverse in 1980. It became prominent again for a brief time in the 1990s but since then it's been a slow decline. In that time, the BJP (Bharatiya Janta Party) has replaced MGP as the dominant force.</p>
+
+<a href="../homepage.html"><div class="boxed">HOME</div></a><a href="../state_index.html"><div class="boxed">STATES</div></a><a href="goa_questions.html"><div class="boxed">GOA</div>
+
+</body>
+</html>

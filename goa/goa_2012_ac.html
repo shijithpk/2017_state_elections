@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Khula:400,700" rel="stylesheet">
+
+    <style type="text/css">
+
+body { 
+    background-color: rgba(253,217,40,1);
+    font-family: 'Khula', sans-serif;
+    font-size: 16px;
+    color: #4f504f;
+    font-weight: normal;
+    line-height: 24px;
+    width: 375px;
+    height: 600px;
+    border: 0px solid #4f504f;
+    padding: 4px 4px 0px 4px;
+}
+
+line{
+    opacity:0;
+}
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #4f504f;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+  }
+
+.shadow {
+    -webkit-filter: drop-shadow( 5px 5px 5px #000 );
+            filter: drop-shadow( 5px 5px 5px #000 );
+
+}    
+
+div.boxed{
+    display: inline-block;
+    border:none;
+    color: rgba(253,217,40,1);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    font-family: 'Khula', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    width:auto;
+    height: auto;
+    padding: 6px 20px;
+     box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+     -moz-box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+     -webkit-box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+    background-color: #4f504f;
+    background-image: linear-gradient(to bottom, #606160, #070807);
+    margin:5px 15px 1px 15px;
+    float:left;
+}
+
+div.boxed:active{
+    display: inline-block;
+    border:none;
+    color: rgba(253,217,40,1);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    font-family: 'Khula', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    width:auto;
+    height: auto;
+    padding: 6px 20px;
+         box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+     -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+     -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+    background-color: #4f504f;
+    background-image: linear-gradient(to bottom, #606160, #070807);
+    margin:5px 15px 1px 15px;
+    float:left;
+}
+
+
+    </style>
+
+  </head>
+ 
+<body>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
+
+<p style="margin:2px 4px 2px 4px;line-height:16px;color:#4f504f;font-weight:bold;font-size:16px;text-align:center;">GOA IN THE 2012 STATE ELECTION</p>
+
+  <div style="width:365px;height:250px;" id="chart"></div>
+  <div style="width:365px;height:95px;" id="chart2"></div>
+
+  <script type="text/javascript">
+
+    var w = 365;
+    var h = 250;
+
+    var map = d3.select("#chart")
+                      .append("svg:svg")
+                      .attr("width", w)
+                      .attr("height", h)
+                      .style("margin", "0px 4px 0px 4px")
+                      .style("background","#4f504f");
+
+d3.json("../data/goa_new_reduced.geojson", function (json) {
+
+var proj = d3.geoMercator().fitSize([w, h], json);
+var pathx = d3.geoPath().projection(proj);
+
+      
+    map 
+        .append("svg:g")
+        .style("fill","#4f504f")
+        .selectAll("path")
+        .data(json.features)
+        .enter()
+        .append("path")
+        .attr("d", pathx)
+        .style("stroke", "#fdd928")
+        .style("opacity","1")
+        .style("stroke-width", "1");
+
+var map2 =  d3.select("#chart2")
+              .append("svg:svg")
+              .attr("width", w)
+              .attr("height", "200px")
+              .style("margin", "10px 4px 0px 4px")
+              .append("svg:g");
+
+
+    map2
+        .append("svg:image")
+        .attr("xlink:href","../exp_buttons/bharatiya_janta_party_75.png")
+        .attr('height', '75')
+        .attr('width', '75')
+        .attr('class','shadow partyButton')
+        .attr('id','bjpButton')
+        .attr("x", 10)             
+        .attr("y", 0)    
+        .on("click", function(){
+            d3.selectAll('.line:not(.bjpLine)').style('opacity', "0");
+            d3.select(".bjpLine").style('opacity', "1");
+            d3.select("#bjpButton").classed('shadow',false);
+            d3.selectAll('.partyButton:not(#bjpButton)').classed('shadow',true);
+            map.append("text")
+                .text("Bharatiya Janta Party")
+                //.style("text-decoration","underline")
+                .attr("y", "215")
+                .attr("x", "10")
+                .attr("class","line bjpLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map.append("text")
+                .text("21 / 40 seats")
+                //.style("text-decoration","underline")
+                .attr("y", "235")
+                .attr("x", "10")
+                .attr("class","line bjpLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map
+              .append("svg:g")
+              .style("fill","#4f504f")
+              .selectAll("path")
+              .data(json.features)
+              .enter()
+              .append("path")
+                  .attr("d", pathx)
+                  .style("stroke", "#fdd928")
+                  .style("opacity","1")
+                  .style("stroke-width", "1")
+                  .style("fill",colorParty);
+                
+                function colorParty(d) {
+                   if (d.properties.goa_2012_2012_1 == "Bharatiya Janta Party") {
+                      return "#fdd928"
+                } else {
+                      return "#4f504f";
+                    }
+                };
+              });
+
+      map2
+        .append("text")
+        .attr("x", 35)             
+        .attr("y", 95)    
+        .text("BJP")
+        .style("fill","#4f504f")
+        .style("font-weight","bold");
+
+      map2
+        .append("svg:image")
+        .attr("xlink:href","../exp_buttons/indian_national_congress_75.png")
+        .attr('height', '75')
+        .attr('width', '75')
+        .attr('class','shadow partyButton')
+        .attr('id','incButton')
+        .attr("x", "130")             
+        .attr("y", "0")    
+        .on("click", function(){
+            d3.selectAll('.line:not(.incLine)').style('opacity', "0");
+            d3.select(".incLine").style('opacity', "1");
+            d3.select("#incButton").classed('shadow',false);
+            d3.selectAll('.partyButton:not(#incButton)').classed('shadow',true);
+            map.append("text")
+                .text("Indian National Congress")
+                //.style("text-decoration","underline")
+                .attr("y", "215")
+                .attr("x", "10")
+                .attr("class","line incLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map.append("text")
+                .text("9 / 40 seats")
+                //
+                .attr("y", "235")
+                .attr("x", "10")
+                .attr("class","line incLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map
+              .append("svg:g")
+              .style("fill","#4f504f")
+              .selectAll("path")
+              .data(json.features)
+              .enter()
+              .append("path")
+                  .attr("d", pathx)
+                  .style("stroke", "#fdd928")
+                  .style("opacity","1")
+                  .style("stroke-width", "1")
+                  .style("fill",colorParty);
+                
+                function colorParty(d) {
+                   if (d.properties.goa_2012_2012_1 == "Indian National Congress") {
+                      return "#fdd928"
+                } else {
+                      return "#4f504f";
+                    }
+                };
+              });
+  
+
+        map2
+          .append("text")
+          .attr("x", "155")             
+          .attr("y", "95")    
+          .text("INC")
+          .style("fill","#4f504f")
+          .style("font-weight","bold");
+
+
+        map2
+            .append("svg:image")
+            .attr("xlink:href","../exp_buttons/maharashtravadi_gomantak_party_75.png")
+            .attr('height', '75')
+            .attr('width', '75')
+            .attr('class','shadow partyButton')
+            .attr('id','mgpButton')
+            .attr("x", "250")             
+            .attr("y", "0")    
+          .on("click", function(){
+            d3.selectAll('.line:not(.mgpLine)').style('opacity', "0");
+            d3.selectAll(".mgpLine").style('opacity', "1");
+            d3.select("#mgpButton").classed('shadow',false);
+            d3.selectAll('.partyButton:not(#mgpButton)').classed('shadow',true);
+
+            map.append("text")
+                .text("Maharashtravadi Gomantak")
+                //.style("text-decoration","underline")
+                .attr("y", "215")
+                .attr("x", "10")
+                .attr("class","line mgpLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map.append("text")
+                .text("Party   3 / 40 seats")
+                //.style("text-decoration","underline")
+                .attr("y", "235")
+                .attr("x", "10")
+                .attr("class","line mgpLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map
+              .append("svg:g")
+              .style("fill","#4f504f")
+              .selectAll("path")
+              .data(json.features)
+              .enter()
+              .append("path")
+                  .attr("d", pathx)
+                  .style("stroke", "#fdd928")
+                  .style("opacity","1")
+                  .style("stroke-width", "1")
+                  .style("fill",colorParty);
+                
+                function colorParty(d) {
+                   if (d.properties.goa_2012_2012_1 == "Maharashtrawadi Gomantak") {
+                      return "#fdd928"
+                } else {
+                      return "#4f504f";
+                    }
+                };
+              });
+
+        map2
+            .append("text")
+            .attr("x", 270)             
+            .attr("y", 95)    
+            .text("MGP")
+            .style("fill","#4f504f")
+            .style("font-weight","bold");
+
+});
+
+            /*BASE FOR POSSIBLE TOGGLE CODE, COULDNT COMPLETE IT
+
+            d3.selectAll('.line:not(.sadLine)').style('opacity', function(){return d3.selectAll('.sadLine').style('opacity') == "1" ? "0":"0";});
+            //d3.selectAll(".sadLine").style('opacity', function(){return d3.selectAll('.sadLine').style('opacity') == "0" ? "1":"1";});
+            
+            */
+
+  </script>
+
+<p style="margin:20px 4px 1px 4px;color:#4f504f;font-weight:normal;font-size:16px;text-align:left;">In the last election to the state legislature in Goa, the BJP (Bharatiya Janta Party) got a majority with 21 out of 40 seats. It got most of South Goa and parts of North Goa too. The INC (Indian National Congress) got nine out of 40 seats, winning in South Goa too (in the region of Quepem, for example) and in North Goa (in the regions of Tiswadi and Satari).</p>
+
+<a href="../homepage.html"><div class="boxed">HOME</div></a><a href="../state_index.html"><div class="boxed">STATES</div></a><a href="goa_questions.html"><div class="boxed">GOA</div></a>
+
+</body>
+</html>

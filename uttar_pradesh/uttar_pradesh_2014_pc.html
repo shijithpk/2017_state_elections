@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Khula:400,700" rel="stylesheet">
+
+<style type="text/css">
+
+body { 
+    background-color: rgba(253,217,40,1);
+    font-family: 'Khula', sans-serif;
+    font-size: 16px;
+    color: #4f504f;
+    font-weight: normal;
+    line-height: 24px;
+    width: 375px;
+    height: 600px;
+    border: 0px solid #4f504f;
+    padding: 4px 4px 0px 4px;
+}
+
+line{
+    opacity:0;
+}
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #4f504f;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+  }
+
+.shadow {
+    -webkit-filter: drop-shadow( 5px 5px 5px #000 );
+            filter: drop-shadow( 5px 5px 5px #000 );
+
+}    
+
+
+div.boxed{
+    display: inline-block;
+    border:none;
+    color: rgba(253,217,40,1);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    font-family: 'Khula', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    width:auto;
+    height: auto;
+    padding: 6px 20px;
+    background-color: #4f504f;
+    background-image: linear-gradient(to bottom, #606160, #070807);
+    margin:5px 15px 1px 15px;
+    float:left;
+       box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+     -moz-box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+     -webkit-box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+}
+
+div.boxed:active{
+    display: inline-block;
+    border:none;
+    color: rgba(253,217,40,1);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    font-family: 'Khula', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    width:auto;
+    height: auto;
+    padding: 6px 20px;
+    background-color: #4f504f;
+    background-image: linear-gradient(to bottom, #606160, #070807);
+    margin:5px 15px 1px 15px;
+    float:left;
+       box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+     -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+     -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+}
+
+
+    </style>
+
+  </head>
+ 
+<body>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
+
+<p style="margin:2px 4px 2px 4px;line-height:16px;color:#4f504f;font-weight:bold;font-size:15px;text-align:center;">UTTAR PRADESH IN THE 2014 NATIONAL ELECTION</p>
+
+  <div style="width:365px;height:250px;" id="chart"></div>
+  <div style="width:365px;height:95px;" id="chart2"></div>
+
+  <script type="text/javascript">
+
+    var w = 365;
+    var h = 250;
+
+    var map = d3.select("#chart")
+                      .append("svg:svg")
+                      .attr("width", w)
+                      .attr("height", h)
+                      .style("margin", "0px 4px 0px 4px")
+                      .style("background","#4f504f");
+
+d3.json("../data/uttar_pradesh_reduced.geojson", function (json) {
+
+var proj = d3.geoMercator().fitSize([w, h], json);
+var pathx = d3.geoPath().projection(proj);
+
+      
+    map 
+        .append("svg:g")
+        .style("fill","#4f504f")
+        .selectAll("path")
+        .data(json.features)
+        .enter()
+        .append("path")
+        .attr("d", pathx)
+        .style("stroke", "#fdd928")
+        .style("opacity","1")
+        .style("stroke-width", "1");
+
+var map2 =  d3.select("#chart2")
+              .append("svg:svg")
+              .attr("width", w)
+              .attr("height", "200px")
+              .style("margin", "10px 4px 0px 4px")
+              .append("svg:g");
+
+
+    map2
+        .append("svg:image")
+        .attr("xlink:href","../exp_buttons/bharatiya_janta_party_75.png")
+        .attr('height', '75')
+        .attr('width', '75')
+        .attr('class','shadow partyButton')
+        .attr('id','bjpButton')
+        .attr("x", 0)             
+        .attr("y", 0)    
+        .on("click", function(){
+            d3.selectAll('.line:not(.bjpLine)').style('opacity', "0");
+            d3.select(".bjpLine").style('opacity', "1");
+            d3.select("#bjpButton").classed('shadow',false);
+            d3.selectAll('.partyButton:not(#bjpButton)').classed('shadow',true);
+            map.append("text")
+                .text("Bharatiya Janta Party")
+                //.style("text-decoration","underline")
+                .attr("y", "35")
+                .attr("x", "190")
+                .attr("class","line bjpLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map.append("text")
+                .text("328 / 403 seats")
+                //.style("text-decoration","underline")
+                .attr("y", "55")
+                .attr("x", "190")
+                .attr("class","line bjpLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map
+              .append("svg:g")
+              .style("fill","#4f504f")
+              .selectAll("path")
+              .data(json.features)
+              .enter()
+              .append("path")
+                  .attr("d", pathx)
+                  .style("stroke", "#fdd928")
+                  .style("opacity","1")
+                  .style("stroke-width", "1")
+                  .style("fill",colorParty);
+                
+                function colorParty(d) {
+                   if (d.properties.UP_2014_2014_1 == "Bharatiya Janta Party") {
+                      return "#fdd928"
+                } else {
+                      return "#4f504f";
+                    }
+                };
+              });
+
+      map2
+        .append("text")
+        .attr("x", 25)             
+        .attr("y", 95)    
+        .text("BJP")
+        .style("fill","#4f504f")
+        .style("font-weight","bold");
+
+      map2
+        .append("svg:image")
+        .attr("xlink:href","../exp_buttons/indian_national_congress_75.png")
+        .attr('height', '75')
+        .attr('width', '75')
+        .attr('class','shadow partyButton')
+        .attr('id','incButton')
+        .attr("x", "90")             
+        .attr("y", "0")    
+        .on("click", function(){
+            d3.selectAll('.line:not(.incLine)').style('opacity', "0");
+            d3.select(".incLine").style('opacity', "1");
+            d3.select("#incButton").classed('shadow',false);
+            d3.selectAll('.partyButton:not(#incButton)').classed('shadow',true);
+            map.append("text")
+                .text("Indian National Congress")
+                //.style("text-decoration","underline")
+                .attr("y", "35")
+                .attr("x", "190")
+                .attr("class","line incLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map.append("text")
+                .text("15 / 403 seats")
+                //
+                .attr("y", "55")
+                .attr("x", "190")
+                .attr("class","line incLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map
+              .append("svg:g")
+              .style("fill","#4f504f")
+              .selectAll("path")
+              .data(json.features)
+              .enter()
+              .append("path")
+                  .attr("d", pathx)
+                  .style("stroke", "#fdd928")
+                  .style("opacity","1")
+                  .style("stroke-width", "1")
+                  .style("fill",colorParty);
+                
+                function colorParty(d) {
+                   if (d.properties.UP_2014_2014_1 == "Indian National Congress") {
+                      return "#fdd928"
+                } else {
+                      return "#4f504f";
+                    }
+                };
+              });
+  
+
+        map2
+          .append("text")
+          .attr("x", "115")             
+          .attr("y", "95")    
+          .text("INC")
+          .style("fill","#4f504f")
+          .style("font-weight","bold");
+
+
+        map2
+            .append("svg:image")
+            .attr("xlink:href","../exp_buttons/samajwadi_party_75.png")
+            .attr('height', '75')
+            .attr('width', '75')
+            .attr('class','shadow partyButton')
+            .attr('id','spButton')
+            .attr("x", "180")             
+            .attr("y", "0")    
+          .on("click", function(){
+            d3.selectAll('.line:not(.spLine)').style('opacity', "0");
+            d3.selectAll(".spLine").style('opacity', "1");
+            d3.select("#spButton").classed('shadow',false);
+            d3.selectAll('.partyButton:not(#spButton)').classed('shadow',true);
+
+            map.append("text")
+                .text("Samajwadi Party")
+                //.style("text-decoration","underline")
+                .attr("y", "35")
+                .attr("x", "190")
+                .attr("class","line spLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map.append("text")
+                .text("42 / 403 seats")
+                //.style("text-decoration","underline")
+                .attr("y", "55")
+                .attr("x", "190")
+                .attr("class","line spLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map
+              .append("svg:g")
+              .style("fill","#4f504f")
+              .selectAll("path")
+              .data(json.features)
+              .enter()
+              .append("path")
+                  .attr("d", pathx)
+                  .style("stroke", "#fdd928")
+                  .style("opacity","1")
+                  .style("stroke-width", "1")
+                  .style("fill",colorParty);
+                
+                function colorParty(d) {
+                   if (d.properties.UP_2014_2014_1 == "Samajwadi Party") {
+                      return "#fdd928"
+                } else {
+                      return "#4f504f";
+                    }
+                };
+              });
+
+        map2
+            .append("text")
+            .attr("x", 200)             
+            .attr("y", 95)    
+            .text("SP")
+            .style("fill","#4f504f")
+            .style("font-weight","bold");
+
+
+        map2
+            .append("svg:image")
+            .attr("xlink:href","../exp_buttons/bahujan_samaj_75.png")
+            .attr('height', '75')
+            .attr('width', '75')
+            .attr('class','shadow partyButton')
+            .attr('id','bspButton')
+            .attr("x", "270")             
+            .attr("y", "0")    
+          .on("click", function(){
+            d3.selectAll('.line:not(.bspLine)').style('opacity', "0");
+            d3.selectAll(".bspLine").style('opacity', "1");
+            d3.select("#bspButton").classed('shadow',false);
+            d3.selectAll('.partyButton:not(#bspButton)').classed('shadow',true);
+
+            map.append("text")
+                .text("Bahujan Samaj Party")
+                //.style("text-decoration","underline")
+                .attr("y", "35")
+                .attr("x", "190")
+                .attr("class","line bspLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map.append("text")
+                .text("9 / 403 seats")
+                //.style("text-decoration","underline")
+                .attr("y", "55")
+                .attr("x", "190")
+                .attr("class","line bspLine")
+                //.style("opacity", "1")
+                .style("fill","#fdd928")
+                .style("font-size","12px")
+                .style("font-weight","bold");
+            map
+              .append("svg:g")
+              .style("fill","#4f504f")
+              .selectAll("path")
+              .data(json.features)
+              .enter()
+              .append("path")
+                  .attr("d", pathx)
+                  .style("stroke", "#fdd928")
+                  .style("opacity","1")
+                  .style("stroke-width", "1")
+                  .style("fill",colorParty);
+                
+                function colorParty(d) {
+                   if (d.properties.UP_2014_2014_1 == "Bahujan Samaj Party") {
+                      return "#fdd928"
+                } else {
+                      return "#4f504f";
+                    }
+                };
+              });
+
+        map2
+            .append("text")
+            .attr("x", 290)             
+            .attr("y", 95)    
+            .text("BSP")
+            .style("fill","#4f504f")
+            .style("font-weight","bold");
+
+});
+
+  </script>
+
+<p style="margin:20px 4px 1px 4px;color:#4f504f;font-weight:normal;font-size:16px;text-align:left;">The last election to the Indian parliament took place in 2014. If we break down those seats into regions corresponding to seats in the state legislature, we get a more up-to-date idea of the public support for different parties. On that basis, the BJP, or the Bharatiya Janta Party, won 328 out of 403 potential seats.</p>
+
+<a href="../homepage.html"><div class="boxed">HOME</div></a><a href="../state_index.html"><div class="boxed">STATES</div></a><a href="uttar_pradesh_questions.html"><div class="boxed">U.P.</div></a>
+
+</body>
+</html>
