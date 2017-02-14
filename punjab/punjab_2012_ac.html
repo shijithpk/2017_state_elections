@@ -54,6 +54,9 @@ div.boxed{
     background-image: linear-gradient(to bottom, #606160, #070807);
     margin:5px 15px 1px 15px;
     float:left;
+            box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+     -moz-box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
+     -webkit-box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 1);
 }
 
 div.boxed:active{
@@ -73,8 +76,14 @@ div.boxed:active{
     background-image: linear-gradient(to bottom, #606160, #070807);
     margin:5px 15px 1px 15px;
     float:left;
+          box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+     -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+     -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
 }
 
+.shadow {
+filter: url(#drop-shadow);
+}
 
     </style>
 
@@ -89,6 +98,11 @@ div.boxed:active{
   <div style="width:365px;height:95px;" id="chart2"></div>
 
   <script type="text/javascript">
+
+d3.xml("../exp_buttons/shadow.svg").mimeType("image/svg+xml").get(function(error, xml) {
+  if (error) throw error;
+  document.body.appendChild(xml.documentElement);
+});
 
     var w = 365;
     var h = 250;
