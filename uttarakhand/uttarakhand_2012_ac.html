@@ -100,10 +100,6 @@ filter: url(#drop-shadow);
 
   <script type="text/javascript">
 
-d3.xml("../exp_buttons/shadow.svg").mimeType("image/svg+xml").get(function(error, xml) {
-  if (error) throw error;
-  document.body.appendChild(xml.documentElement);
-});
 
     var w = 365;
     var h = 250;
@@ -139,6 +135,11 @@ var map2 =  d3.select("#chart2")
               .attr("height", "200px")
               .style("margin", "10px 4px 0px 4px")
               .append("svg:g");
+
+d3.xml("../exp_buttons/shadow.svg").mimeType("image/svg+xml").get(function(error, xml) {
+  if (error) throw error;
+  document.body.appendChild(xml.documentElement);
+});
 
 
     map2

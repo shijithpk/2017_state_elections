@@ -101,10 +101,7 @@ div.boxed:active{
 
   <script type="text/javascript">
 
-d3.xml("../exp_buttons/shadow.svg").mimeType("image/svg+xml").get(function(error, xml) {
-  if (error) throw error;
-  document.body.appendChild(xml.documentElement);
-});
+
 
 
     var w = 365;
@@ -142,6 +139,10 @@ var map2 =  d3.select("#chart2")
               .style("margin", "10px 4px 0px 4px")
               .append("svg:g");
 
+d3.xml("../exp_buttons/shadow.svg").mimeType("image/svg+xml").get(function(error, xml) {
+  if (error) throw error;
+  document.body.appendChild(xml.documentElement);
+});
 
     map2
         .append("svg:image")

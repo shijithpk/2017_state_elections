@@ -105,10 +105,6 @@ filter: url(#drop-shadow);
 
 <script>
 
-d3.xml("../exp_buttons/shadow.svg").mimeType("image/svg+xml").get(function(error, xml) {
-  if (error) throw error;
-  document.body.appendChild(xml.documentElement);
-});
 
 //much of the code is from d3noob.org (http://www.d3noob.org/2014/05/show-hide-d3js-element-by-clicking-on.html) and stackoverflow
 
@@ -203,6 +199,13 @@ svg.append("text")
 	.text("(% of seats won)")
 	.style("fill","#4f504f")
 	.style("font-size","14px");
+
+
+d3.xml("../exp_buttons/shadow.svg").mimeType("image/svg+xml").get(function(error, xml) {
+  if (error) throw error;
+  document.body.appendChild(xml.documentElement);
+});
+
 
 svg
 	.append("svg:image")
